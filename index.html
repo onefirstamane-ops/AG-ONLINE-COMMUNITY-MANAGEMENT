@@ -1,1 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b14">
+  <meta name="description" content="AG Online Community Management Dashboard">
+  <title>AG ONLINE | Community Management</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-page="overview">
+        <span class="brand-mark">AG</span>
+        <span><strong>AG ONLINE</strong><small>COMMUNITY HUB</small></span>
+      </a>
+      <div class="nav-label" data-i18n="workspace">WORKSPACE</div>
+      <nav class="main-nav">
+        <button class="nav-item active" data-page="overview"><span>▦</span><span data-i18n="overview">Overview</span></button>
+        <button class="nav-item" data-page="accounts"><span>◉</span><span data-i18n="accounts">All Accounts</span><b>7</b></button>
+        <button class="nav-item" data-page="content"><span>▶</span><span data-i18n="content">Content Manager</span></button>
+        <button class="nav-item" data-page="reports"><span>▤</span><span data-i18n="reports">Reports & Export</span></button>
+      </nav>
+      <div class="nav-label" data-i18n="connectedAccounts">CONNECTED ACCOUNTS</div>
+      <nav id="accountNav" class="account-nav"></nav>
+      <div class="sidebar-bottom">
+        <div class="connection-card">
+          <span class="status-dot"></span>
+          <div><strong data-i18n="apiStatus">API Status</strong><small data-i18n="notConnected">Not connected</small></div>
+        </div>
+        <button class="nav-item" data-page="settings"><span>⚙</span><span data-i18n="settings">Settings</span></button>
+        <div class="sidebar-footer">AG ONLINE MANAGEMENT<br><span>Frontend dashboard</span></div>
+      </div>
+    </aside>
 
+    <main class="main-area">
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+        <div class="breadcrumb"><span>AG ONLINE</span><i>/</i><strong id="pageCrumb">Overview</strong></div>
+        <div class="top-actions">
+          <span class="demo-badge"><span class="status-dot"></span><span data-i18n="demoMode">DEMO MODE</span></span>
+          <button class="icon-btn" id="languageToggle" title="Change language">বাংলা</button>
+          <button class="admin-btn" id="adminButton">Admin Login</button>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section id="page-overview" class="page active">
+          <div class="page-heading">
+            <div><p class="eyebrow" data-i18n="socialOverview">SOCIAL OVERVIEW</p><h1 data-i18n="overviewTitle">Your community, one view.</h1><p class="muted" data-i18n="overviewSubtitle">Track your seven social accounts in one place.</p></div>
+            <div class="heading-actions"><select id="dateFilter" aria-label="Date range"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select><button class="primary-btn" data-page="accounts">＋ <span data-i18n="manageAccounts">Manage accounts</span></button></div>
+          </div>
+          <div class="notice"><span>ⓘ</span><div><strong data-i18n="demoNoticeTitle">Live data is not connected</strong><p data-i18n="demoNotice">This dashboard shows connection states and sample visualizations only. Connect approved APIs before relying on metrics.</p></div></div>
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-top"><span data-i18n="totalViews">Total Views / Plays</span><span class="metric-icon blue">◉</span></div><strong id="totalViews">—</strong><small data-i18n="awaitingData">Waiting for API data</small></article>
+            <article class="metric-card"><div class="metric-top"><span data-i18n="totalEngagement">Total Engagement</span><span class="metric-icon purple">♡</span></div><strong id="totalEngagement">—</strong><small data-i18n="awaitingData">Waiting for API data</small></article>
+            <article class="metric-card"><div class="metric-top"><span data-i18n="audience">Followers / Subscribers</span><span class="metric-icon cyan">♙</span></div><strong id="totalAudience">—</strong><small data-i18n="separateMetrics">Tracked separately by platform</small></article>
+            <article class="metric-card"><div class="metric-top"><span data-i18n="connectedAccounts">Connected Accounts</span><span class="metric-icon green">✓</span></div><strong id="connectedCount">0 / 7</strong><small data-i18n="connectionNeeds">API authorization required</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel chart-panel"><div class="panel-heading"><div><h2 data-i18n="growthOverview">Growth overview</h2><p data-i18n="growthCaption">Account metrics appear after API connection</p></div><span class="pill">Analytics</span></div><div class="chart-wrap"><canvas id="growthChart" aria-label="Growth chart"></canvas><div id="chartEmpty" class="chart-empty">No live analytics available yet</div></div></article>
+            <article class="panel"><div class="panel-heading"><div><h2 data-i18n="accountHealth">Account health</h2><p data-i18n="accountHealthCaption">Connection status by platform</p></div></div><div id="healthList" class="health-list"></div></article>
+          </div>
+          <article class="panel table-panel"><div class="panel-heading"><div><h2 data-i18n="accountSnapshot">Account snapshot</h2><p data-i18n="accountSnapshotCaption">Each account keeps its own details and reports</p></div><button class="text-btn" data-page="accounts" data-i18n="viewAll">View all →</button></div><div class="table-scroll"><table><thead><tr><th>ACCOUNT</th><th>PLATFORM</th><th>STATUS</th><th>LAST SYNC</th><th></th></tr></thead><tbody id="overviewAccounts"></tbody></table></div></article>
+        </section>
+
+        <section id="page-accounts" class="page">
+          <div class="page-heading"><div><p class="eyebrow">ACCOUNT CENTER</p><h1 data-i18n="allAccountsTitle">All seven accounts</h1><p class="muted" data-i18n="allAccountsSubtitle">Select an account to view its dedicated dashboard.</p></div><button class="primary-btn" id="addAccountBtn">＋ <span data-i18n="addAccount">Add account</span></button></div>
+          <div class="account-card-grid" id="accountCards"></div>
+        </section>
+
+        <section id="page-detail" class="page">
+          <div class="page-heading detail-heading"><div><p class="eyebrow" id="detailPlatform">ACCOUNT DETAILS</p><h1 id="detailName">Account</h1><p class="muted" id="detailUrl">Add a profile or channel URL in settings.</p></div><div class="heading-actions"><span class="status-pill disconnected" id="detailStatus">Not connected</span><button class="secondary-btn" id="editAccountBtn">Edit account</button></div></div>
+          <div class="notice"><span>ⓘ</span><div><strong data-i18n="accountDataTitle">Account-specific data</strong><p data-i18n="accountDataNotice">Metrics below remain unavailable until this account is connected through an approved API. Profile URLs alone do not unlock private analytics.</p></div></div>
+          <div class="metric-grid detail-metrics">
+            <article class="metric-card"><div class="metric-top"><span data-i18n="viewsPlays">Views / Plays</span><span class="metric-icon blue">◉</span></div><strong>—</strong><small data-i18n="notAvailable">Not available</small></article>
+            <article class="metric-card"><div class="metric-top"><span data-i18n="likes">Likes</span><span class="metric-icon purple">♡</span></div><strong>—</strong><small data-i18n="notAvailable">Not available</small></article>
+            <article class="metric-card"><div class="metric-top"><span data-i18n="comments">Comments</span><span class="metric-icon cyan">▤</span></div><strong>—</strong><small data-i18n="notAvailable">Not available</small></article>
+            <article class="metric-card"><div class="metric-top"><span id="audienceMetricLabel">Followers / Subscribers</span><span class="metric-icon green">♙</span></div><strong>—</strong><small data-i18n="notAvailable">Not available</small></article>
+          </div>
+          <div class="detail-tabs" role="tablist"><button class="detail-tab active" data-tab="analytics">Analytics</button><button class="detail-tab" data-tab="content">Videos / Posts</button><button class="detail-tab" data-tab="growth">Growth</button><button class="detail-tab" data-tab="comments">Comments</button><button class="detail-tab" data-tab="reports">Reports</button></div>
+          <article class="panel detail-tab-panel" id="detailTabPanel"><div class="empty-state"><span>⌁</span><h2 data-i18n="noAnalytics">No analytics available</h2><p data-i18n="connectForData">Connect this account using its official API to load permitted data here.</p><button class="secondary-btn" id="connectionHelpBtn">Connection setup</button></div></article>
+        </section>
+
+        <section id="page-content" class="page">
+          <div class="page-heading"><div><p class="eyebrow">PUBLISHING WORKSPACE</p><h1 data-i18n="contentTitle">Content manager</h1><p class="muted" data-i18n="contentSubtitle">Organize your own video and post links across accounts.</p></div><button class="primary-btn" id="addContentBtn">＋ <span data-i18n="addContent">Add content</span></button></div>
+          <div class="toolbar"><input id="contentSearch" type="search" placeholder="Search title or URL..." aria-label="Search content"><select id="contentAccountFilter" aria-label="Filter account"><option value="all">All accounts</option></select></div>
+          <div class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>TITLE</th><th>ACCOUNT</th><th>URL</th><th>DATE ADDED</th><th>ACTION</th></tr></thead><tbody id="contentRows"></tbody></table></div><div id="contentEmpty" class="empty-state"><span>▧</span><h2 data-i18n="noContent">No content saved yet</h2><p data-i18n="addContentHint">Add a post or video link to organize it here.</p></div></div>
+        </section>
+
+        <section id="page-reports" class="page">
+          <div class="page-heading"><div><p class="eyebrow">REPORT CENTER</p><h1 data-i18n="reportsTitle">Reports & export</h1><p class="muted" data-i18n="reportsSubtitle">Export account lists and content records. Analytics exports require connected data.</p></div><button class="primary-btn" id="exportAccountsBtn">↓ Export accounts CSV</button></div>
+          <div class="report-grid"><article class="panel report-card"><span class="metric-icon blue">▤</span><h2>Accounts report</h2><p>Seven configured accounts, platform labels, URLs and connection status.</p><button class="secondary-btn" id="exportAccountsBtn2">Download CSV</button></article><article class="panel report-card"><span class="metric-icon purple">▶</span><h2>Content report</h2><p>Export content records saved in this browser session.</p><button class="secondary-btn" id="exportContentBtn">Download CSV</button></article><article class="panel report-card"><span class="metric-icon cyan">◷</span><h2>Analytics report</h2><p>Live analytics are not connected. No fabricated metrics will be exported.</p><button class="secondary-btn" disabled>API required</button></article></div>
+        </section>
+
+        <section id="page-settings" class="page">
+          <div class="page-heading"><div><p class="eyebrow">PREFERENCES</p><h1 data-i18n="settingsTitle">Settings</h1><p class="muted" data-i18n="settingsSubtitle">Manage account labels and dashboard preferences.</p></div></div>
+          <div class="settings-grid"><article class="panel settings-panel"><h2 data-i18n="accountSettings">Account settings</h2><p class="muted" data-i18n="accountSettingsText">Edit account names and URLs. This only saves locally in this browser.</p><button class="secondary-btn" id="settingsAccountsBtn">Manage accounts</button></article><article class="panel settings-panel"><h2 data-i18n="security">Security</h2><p class="muted" data-i18n="securityText">This static frontend does not provide secure admin authentication. Add a server-side auth provider before production use.</p><span class="status-pill disconnected">Backend required</span></article><article class="panel settings-panel"><h2 data-i18n="dataPrivacy">Data & privacy</h2><p class="muted" data-i18n="dataPrivacyText">Never place API secrets or access tokens in public repository files.</p><button class="secondary-btn" id="clearLocalBtn">Clear local content</button></article></div>
+        </section>
+      </div>
+      <footer class="footer"><span>AG ONLINE COMMUNITY MANAGEMENT</span><span>Secure API integration required for live data</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header"><h2 id="modalTitle">Account</h2><button class="icon-btn" id="closeModal" aria-label="Close">×</button></div>
+      <form id="accountForm">
+        <input type="hidden" id="accountId">
+        <label for="accountName">Display name</label><input id="accountName" maxlength="80" required>
+        <label for="accountUrl">Channel / profile URL</label><input id="accountUrl" type="url" placeholder="https://...">
+        <p class="form-help">This saves the label and URL locally only. It does not connect the social platform.</p>
+        <div class="modal-actions"><button type="button" class="secondary-btn" id="cancelModal">Cancel</button><button type="submit" class="primary-btn">Save account</button></div>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
